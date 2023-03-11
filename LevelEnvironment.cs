@@ -18,7 +18,7 @@ namespace Project_3310
         /// <summary>
         /// Массив содержащий все возможные типы объектов
         /// </summary>
-        public char[] objectTypes { get; set; } = { ' ', 'X', '*' };
+        public char[] objectTypes { get; set; } = { ' ', '#', '*', 'X' };
         public LevelEnvironment(char[,] Map)
         {
             this.Map = Map;

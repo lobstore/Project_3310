@@ -4,46 +4,47 @@ namespace Project_3310
     /// <summary>
     /// Перечисление всех существующих типов объектов
     /// </summary>
-    enum ObjectType 
+    enum ObjectType
     {
         NONE = 0,
         Wall,
-        Treasure
+        Treasure,
+        Opened
     }
     internal class Program
     {
         static void Main(string[] args)
         {
 
-            char[,] map =
-            {
-                {'X', 'X', 'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
-                {'X', 'X', 'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X'  },
-            };
+            /* char[,] map =
+             {
+                 {'X', 'X', 'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
+                 {'X', 'X', 'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X'  },
+             };*/
 
-
+            char[,] map = ReadMapFromFile("map.txt");
             #region Settings
             LevelEnvironment levelEnv = new LevelEnvironment(map);
-            Console.CursorVisible = false;
-            Player player = new Player('@');
+            Console.CursorVisible = true;
+            Player player = new Player('@', 7, 10);
             #endregion
 
 
@@ -63,7 +64,7 @@ namespace Project_3310
             {
                 MovePlayer(player);
                 InputManagerAndCollideDetector(levelEnv, player);
-                PickUp(levelEnv, player);
+                // PickUp(levelEnv, player);
                 ClearPlayerTrace(levelEnv, player);
             }
         }
@@ -75,25 +76,29 @@ namespace Project_3310
         /// <param name="player"></param>
         private static void ClearPlayerTrace(LevelEnvironment levelEnv, Player player)
         {
-            Console.SetCursorPosition(player.PrevPosition.posY, player.PrevPosition.posX);
-            Console.Write(levelEnv.objectTypes[(int)ObjectType.NONE]);
+            if (levelEnv.Map[player.PrevPosition.posX, player.PrevPosition.posY] != levelEnv.objectTypes[(int)ObjectType.Treasure] && levelEnv.Map[player.PrevPosition.posX, player.PrevPosition.posY] != levelEnv.objectTypes[(int)ObjectType.Opened])
+            {
+                Console.SetCursorPosition(player.PrevPosition.posY, player.PrevPosition.posX);
+                Console.Write(levelEnv.objectTypes[(int)ObjectType.NONE]);
+
+            }
+            else if (levelEnv.Map[player.PrevPosition.posX, player.PrevPosition.posY] == levelEnv.objectTypes[(int)ObjectType.Treasure])
+            {
+                Console.SetCursorPosition(player.PrevPosition.posY, player.PrevPosition.posX);
+                Console.Write(levelEnv.objectTypes[(int)ObjectType.Treasure]);
+            }
+            else if (levelEnv.Map[player.PrevPosition.posX, player.PrevPosition.posY] == levelEnv.objectTypes[(int)ObjectType.Opened])
+            {
+                Console.SetCursorPosition(player.PrevPosition.posY, player.PrevPosition.posX);
+                Console.Write(levelEnv.objectTypes[(int)ObjectType.Opened]);
+
+            }
+
             player.PrevPosition.posX = player.Position.posX;
             player.PrevPosition.posY = player.Position.posY;
         }
 
-        /// <summary>
-        /// Поднимает предмет на который наступил игрок
-        /// </summary>
-        /// <param name="levelEnv"></param>
-        /// <param name="player"></param>
-        private static void PickUp(LevelEnvironment levelEnv, Player player)
-        {
-            if (levelEnv.Map[player.Position.posX, player.Position.posY] == levelEnv.objectTypes[(int)ObjectType.Treasure])
-            {
-                levelEnv.Map[player.Position.posX, player.Position.posY] = levelEnv.objectTypes[(int)ObjectType.NONE];
-                levelEnv.Map[new Random().Next(levelEnv.Map.GetLength(0) - 1), new Random().Next(levelEnv.Map.GetLength(1) - 1)] = '*';
-            }
-        }
+
         /// <summary>
         /// Проверяет нажатые клавиши и меняет координаты игрока если не произошло столкновения с границами 
         /// </summary>
@@ -129,7 +134,26 @@ namespace Project_3310
                         player.Position.posY++;
                     }
                     break;
+                case ConsoleKey.Spacebar:
+                    PickUp(levelEnv, player);
+                    break;
             };
+        }
+
+        /// <summary>
+        /// Поднимает предмет на который наступил игрок
+        /// </summary>
+        /// <param name="levelEnv"></param>
+        /// <param name="player"></param>
+        private static void PickUp(LevelEnvironment levelEnv, Player player)
+        {
+            if (levelEnv.Map[player.Position.posX, player.Position.posY] == levelEnv.objectTypes[(int)ObjectType.Treasure])
+            {
+                levelEnv.Map[player.Position.posX, player.Position.posY] = levelEnv.objectTypes[(int)ObjectType.Opened];
+                Console.SetCursorPosition(player.PrevPosition.posY, player.PrevPosition.posX);
+                Console.Write(levelEnv.Map[player.Position.posX, player.Position.posY]);
+                Console.SetCursorPosition(player.Position.posY, player.Position.posX);
+            }
         }
 
         /// <summary>
@@ -157,6 +181,34 @@ namespace Project_3310
                 }
                 Console.WriteLine();
             }
+        }
+
+        private static char[,] ReadMapFromFile(string path)
+        {
+            string[] mapRaw = File.ReadAllLines(path);
+            char[,] map = new char[mapRaw.Length, GetMxLengthOfLine(mapRaw)];
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    map[i, j] = mapRaw[i][j];
+                }
+            }
+            return map;
+        }
+
+        private static int GetMxLengthOfLine(string[] lines)
+        {
+            int maxLength = lines[0].Length;
+
+            foreach (var line in lines)
+            {
+                if (line.Length > maxLength)
+                {
+                    maxLength = line.Length;
+                }
+            }
+            return maxLength;
         }
     }
 }
