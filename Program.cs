@@ -16,7 +16,8 @@ namespace Project_3310
         static void Main(string[] args)
         {
 
-            /* char[,] map =
+            /* Пример карты
+             * char[,] map =
              {
                  {'X', 'X', 'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X'  },
                  {'X', ' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','X'  },
@@ -48,8 +49,9 @@ namespace Project_3310
             #endregion
 
 
-
+            // Загрузка карты в консоль
             LoadLevelIntoConsole(levelEnv);
+            // Обновление состояний игры (получение управления, перемещение игрока и т.д)
             Update(levelEnv, player);
 
         }
@@ -183,6 +185,12 @@ namespace Project_3310
             }
         }
 
+
+        /// <summary>
+        /// Метод извлечения данных из текстового файла
+        /// </summary>
+        /// <param name="path">Путь к текстовому файлу</param>
+        /// <returns></returns>
         private static char[,] ReadMapFromFile(string path)
         {
             string[] mapRaw = File.ReadAllLines(path);
@@ -196,7 +204,12 @@ namespace Project_3310
             }
             return map;
         }
-
+        
+        /// <summary>
+        /// Метод для нахождение длины максимальной строки
+        /// </summary>
+        /// <param name="lines">Массив строк в котором нужно найти самую длинную строку</param>
+        /// <returns></returns>
         private static int GetMxLengthOfLine(string[] lines)
         {
             int maxLength = lines[0].Length;
