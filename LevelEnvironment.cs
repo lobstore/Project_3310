@@ -32,6 +32,7 @@ namespace Project_3310
         /// <returns></returns>
         public static void ReadMapFromFile(string path)
         {
+            if (File.Exists(path)) { 
             string[] mapRaw = File.ReadAllLines(path);
             char[,] map = new char[mapRaw.Length, GetMxLengthOfLine(mapRaw)];
             for (int i = 0; i < map.GetLength(0); i++)
@@ -42,6 +43,11 @@ namespace Project_3310
                 }
             }
             Map = map;
+            }
+            else
+            {
+                return;
+            }
         }
 
         /// <summary>
