@@ -57,6 +57,14 @@ namespace Project_3310
                 ClearTrace();
         }
 
+        /// <summary>
+        /// Перемещает "модельку" игрока по заданным координатам
+        /// </summary>
+        public void MovePlayer()
+        {
+            Console.SetCursorPosition(Position.posY, Position.posX);
+            Console.Write(PlayerSkin);
+        }
 
         /// <summary>
         /// Проверяет нажатые клавиши и меняет координаты игрока если не произошло столкновения с границами 
@@ -101,17 +109,14 @@ namespace Project_3310
             };
         }
 
-
-
-        public void PutInInventory(char item)
+        /// <summary>
+        /// Очищает ввод символа в следующей от игрока клетке
+        /// </summary>
+        public void ClearInputChar()
         {
-            inventory.slots.Add(item);
+            Console.SetCursorPosition(Position.posY + 1, Position.posX);
+            Console.Write(LevelEnvironment.Map[Position.posX, Position.posY + 1]);
         }
-        public void RemoveFromInventory(char item)
-        {
-            inventory.slots.Remove(item);
-        }
-
 
         /// <summary>
         /// Очищение клетки с которой игрок ушел
@@ -135,14 +140,9 @@ namespace Project_3310
                 Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.Opened]);
 
             }
-
+            //Для продолжения цикла смещения предыдущей позиции относительно текущей
             PrevPosition.posX = Position.posX;
             PrevPosition.posY = Position.posY;
-        }
-
-        public void OpenInventory()
-        {
-            //TODO выделить новый тред и вывести на вторую консоль инвентарь
         }
 
         /// <summary>
@@ -162,7 +162,9 @@ namespace Project_3310
             }
 
         }
-
+        /// <summary>
+        /// Помещает символ :раскопки" в массив <paramref name="Map"></paramref>
+        /// </summary>
         private void MarkOpened()
         {
             //Запись в карту отметкии о раскопке
@@ -171,6 +173,9 @@ namespace Project_3310
             //Запись на консоль значения из карты
             Console.Write(LevelEnvironment.Map[Position.posX, Position.posY]);
         }
+        /// <summary>
+        /// Помещает символ "пустой клетки" в массив <paramref name="Map"/>
+        /// </summary>
         private void MarkNone()
         {
             //Запись в карту пустого значения
@@ -179,20 +184,26 @@ namespace Project_3310
             //Запись на консоль значения из карты
             Console.Write(LevelEnvironment.Map[Position.posX, Position.posY]);
         }
-
-        public void ClearInputChar()
-        {
-            Console.SetCursorPosition(Position.posY + 1, Position.posX);
-            Console.Write(LevelEnvironment.Map[Position.posX, Position.posY + 1]);
-        }
-
         /// <summary>
-        /// Перемещает "модельку" игрока по заданным координатам
+        /// Записывает в <paramref name="inventory"/> поднятый предмет <paramref name="item"/>
         /// </summary>
-        public void MovePlayer()
+        /// <param name="item"></param>
+        public void PutInInventory(char item)
         {
-            Console.SetCursorPosition(Position.posY, Position.posX);
-            Console.Write(PlayerSkin);
+            inventory.slots.Add(item);
         }
+        /// <summary>
+        /// Удаляет из <paramref name="inventory"/> изъятый предмет <paramref name="item"/>
+        /// </summary>
+        /// <param name="item"></param>
+        public void RemoveFromInventory(char item)
+        {
+            inventory.slots.Remove(item);
+        }
+        public void OpenInventory()
+        {
+            //TODO выделить новый тред и вывести на вторую консоль инвентарь
+        }
+
     }
 }
