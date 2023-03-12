@@ -12,12 +12,12 @@ namespace Project_3310
     internal class Point2D
     {
         /// <summary>
-        /// Позиция по X от начала консоли
+        /// Позиция по X от начала консоли (по вертикали)
         /// </summary>
         public int posX { get; set; }
 
         /// <summary>
-        /// Позиция по Y от начала консоли
+        /// Позиция по Y от начала консоли (по горизонтали)
         /// </summary>
         public int posY { get; set; }
     }

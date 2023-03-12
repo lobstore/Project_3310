@@ -9,8 +9,14 @@ namespace Project_3310
     /// <summary>
     /// Класс представляющий информацию об игроке
     /// </summary>
-    internal class Player
+    internal class Player : Behaviour
     {
+
+        /// <summary>
+        /// Инвентарь игрока
+        /// </summary>
+        public Inventory inventory { get; set; } = new Inventory(5);
+
         /// <summary>
         /// Символьная константа отображающая игрока в консоли
         /// </summary>
@@ -39,6 +45,154 @@ namespace Project_3310
             PrevPosition.posX = posX;
             PrevPosition.posY = posY;
             this.PlayerSkin = PlayerSkin;
+        }
+
+        /// <summary>
+        /// Метод в котором происходит обновление всех состояний
+        /// </summary>
+        override public void Update()
+        {
+                MovePlayer();
+                InputManagerAndCollideDetector();
+                ClearTrace();
+        }
+
+
+        /// <summary>
+        /// Проверяет нажатые клавиши и меняет координаты игрока если не произошло столкновения с границами 
+        /// </summary>
+        public void InputManagerAndCollideDetector()
+        {
+            ConsoleKeyInfo pressedKey = new ConsoleKeyInfo();
+            pressedKey = Console.ReadKey();
+            switch (pressedKey.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    if (LevelEnvironment.Map[Position.posX - 1, Position.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
+                    {
+                        Position.posX--;
+                    }
+                    break;
+                case ConsoleKey.DownArrow:
+                    if (LevelEnvironment.Map[Position.posX + 1, Position.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
+                    {
+                        Position.posX++;
+                    }
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (LevelEnvironment.Map[Position.posX, Position.posY - 1] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
+                    {
+                        Position.posY--;
+                    }
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (LevelEnvironment.Map[Position.posX, Position.posY + 1] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
+                    {
+                        Position.posY++;
+                    }
+                    break;
+                case ConsoleKey.Spacebar:
+                    ClearInputChar();
+                    PickUp();
+                    break;
+                default:
+                    ClearInputChar();
+                    break;
+            };
+        }
+
+
+
+        public void PutInInventory(char item)
+        {
+            inventory.slots.Add(item);
+        }
+        public void RemoveFromInventory(char item)
+        {
+            inventory.slots.Remove(item);
+        }
+
+
+        /// <summary>
+        /// Очищение клетки с которой игрок ушел
+        /// </summary>
+        public void ClearTrace()
+        {
+            if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Treasure] && LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Opened])
+            {
+                Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
+                Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.NONE]);
+
+            }
+            else if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] == LevelEnvironment.objectTypes[(int)ObjectType.Treasure])
+            {
+                Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
+                Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.Treasure]);
+            }
+            else if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] == LevelEnvironment.objectTypes[(int)ObjectType.Opened])
+            {
+                Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
+                Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.Opened]);
+
+            }
+
+            PrevPosition.posX = Position.posX;
+            PrevPosition.posY = Position.posY;
+        }
+
+        public void OpenInventory()
+        {
+            //TODO выделить новый тред и вывести на вторую консоль инвентарь
+        }
+
+        /// <summary>
+        /// Поднимает предмет на котором стоит игрок
+        /// </summary>
+        public void PickUp()
+        {
+
+            if (LevelEnvironment.Map[Position.posX, Position.posY] == LevelEnvironment.objectTypes[(int)ObjectType.Treasure])
+            {
+                MarkOpened();
+            }
+            else if (LevelEnvironment.Map[Position.posX, Position.posY] == LevelEnvironment.objectTypes[(int)ObjectType.Key])
+            {
+                PutInInventory(LevelEnvironment.Map[Position.posX, Position.posY]);
+                MarkNone();
+            }
+
+        }
+
+        private void MarkOpened()
+        {
+            //Запись в карту отметкии о раскопке
+            LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.Opened];
+            Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
+            //Запись на консоль значения из карты
+            Console.Write(LevelEnvironment.Map[Position.posX, Position.posY]);
+        }
+        private void MarkNone()
+        {
+            //Запись в карту пустого значения
+            LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NONE];
+            Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
+            //Запись на консоль значения из карты
+            Console.Write(LevelEnvironment.Map[Position.posX, Position.posY]);
+        }
+
+        public void ClearInputChar()
+        {
+            Console.SetCursorPosition(Position.posY + 1, Position.posX);
+            Console.Write(LevelEnvironment.Map[Position.posX, Position.posY + 1]);
+        }
+
+        /// <summary>
+        /// Перемещает "модельку" игрока по заданным координатам
+        /// </summary>
+        public void MovePlayer()
+        {
+            Console.SetCursorPosition(Position.posY, Position.posX);
+            Console.Write(PlayerSkin);
         }
     }
 }
