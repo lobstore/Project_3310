@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net;
+using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Project_3310
 {
@@ -11,7 +9,6 @@ namespace Project_3310
     /// </summary>
     internal class Player : Behaviour
     {
-
         /// <summary>
         /// Инвентарь игрока
         /// </summary>
@@ -40,7 +37,8 @@ namespace Project_3310
         /// <param name="posX">Смещение от начала координат консоли (первого символа) по вертикали</param>
         /// <param name="posY">Смещение от начала координат консоли (первого символа) по горизонтали</param>
 
-        public Player(char PlayerSkin = '@', int posX = 1, int posY = 1) {
+        public Player(char PlayerSkin = '@', int posX = 1, int posY = 1)
+        {
             Point2D spawnPos = GetSpawnPoint(posX, posY);
             Position.posX = spawnPos.posX;
             Position.posY = spawnPos.posY;
@@ -61,7 +59,7 @@ namespace Project_3310
             int spawnPosY = defaultPosY;
             if (spawnPosX != 1 || spawnPosY != 1)
             {
-                return new Point2D(spawnPosX,spawnPosY);
+                return new Point2D(spawnPosX, spawnPosY);
             }
             return SearchIndexOfObject(ObjectType.Spawner);
         }
@@ -85,7 +83,7 @@ namespace Project_3310
                     }
                 }
             }
-            return new Point2D(spawnPosX,spawnPosY);
+            return new Point2D(spawnPosX, spawnPosY);
 
         }
 
@@ -96,9 +94,9 @@ namespace Project_3310
         /// </summary>
         override public void Update()
         {
-                MovePlayer();
-                InputManagerAndCollideDetector();
-                ClearTrace();
+            MovePlayer();
+            InputManagerAndCollideDetector();
+            ClearTrace();
         }
 
         /// <summary>
@@ -147,6 +145,10 @@ namespace Project_3310
                     ClearInputChar();
                     PickUp();
                     break;
+                case ConsoleKey.I:
+                    ClearInputChar();
+                    OpenInventory();
+                    break;
                 default:
                     ClearInputChar();
                     break;
@@ -167,8 +169,8 @@ namespace Project_3310
         /// </summary>
         public void ClearTrace()
         {
-            
-            if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] == LevelEnvironment.objectTypes[(int)ObjectType.NONE] )
+
+            if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] == LevelEnvironment.objectTypes[(int)ObjectType.NONE])
             {
                 Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
                 Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.NONE]);
@@ -229,6 +231,7 @@ namespace Project_3310
         public void PutInInventory(char item)
         {
             inventory.slots.Add(item);
+            Task.Run(Send);
         }
         /// <summary>
         /// Удаляет из <paramref name="inventory"/> изъятый предмет <paramref name="item"/>
@@ -241,8 +244,43 @@ namespace Project_3310
         public void OpenInventory()
         {
             //TODO выделить новый тред и вывести на вторую консоль инвентарь
+            //Process.Start(@"C:\\Users\\joe\\Documents\\GitHub\\Project3310_Inventory\\bin\\Debug\net6.0\\Project_3310_Inventory.exe");
+            Send();
+            Task.Run(Receive);
 
         }
+        async void Send()
+        {
 
+            using var udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            char[] message = inventory.slots.ToArray();
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            EndPoint remotePoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+            int bytes = await udpSocket.SendToAsync(data, SocketFlags.None, remotePoint);
+            Console.WriteLine($"Отправлено {bytes} байт");
+        }
+        async void Receive()
+        {
+            using var udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+            var localIP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 6666);
+            // начинаем прослушивание входящих сообщений
+            udpSocket.Bind(localIP);
+
+            Console.WriteLine("UDP-сервер запущен...");
+            while (true)
+            {
+                byte[] data = new byte[256]; // буфер для получаемых данных
+                                             //адрес, с которого пришли данные
+                EndPoint remoteIp = new IPEndPoint(IPAddress.Any, 0);
+                // получаем данные в массив data
+                var result = await udpSocket.ReceiveFromAsync(data, SocketFlags.None, remoteIp);
+                var message = Encoding.UTF8.GetString(data, 0, result.ReceivedBytes);
+                Console.WriteLine($"Получено {result.ReceivedBytes} байт");
+                Console.WriteLine($"Удаленный адрес: {result.RemoteEndPoint}");
+                Console.WriteLine(message);     // выводим полученное сообщение
+
+            }
+        }
     }
 }
