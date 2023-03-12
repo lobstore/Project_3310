@@ -203,6 +203,7 @@ namespace Project_3310
         public void OpenInventory()
         {
             //TODO выделить новый тред и вывести на вторую консоль инвентарь
+
         }
 
     }
