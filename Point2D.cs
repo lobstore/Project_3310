@@ -11,6 +11,13 @@ namespace Project_3310
     /// </summary>
     internal class Point2D
     {
+        public Point2D(int x, int y)
+        {
+            posX= x;
+            posY= y;
+        }
+
+        public Point2D() { }
         /// <summary>
         /// Позиция по X от начала консоли (по вертикали)
         /// </summary>

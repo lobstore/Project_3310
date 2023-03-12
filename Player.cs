@@ -39,13 +39,57 @@ namespace Project_3310
         /// <param name="PlayerSkin">Символьная константа представляющая игрока в консоли</param>
         /// <param name="posX">Смещение от начала координат консоли (первого символа) по вертикали</param>
         /// <param name="posY">Смещение от начала координат консоли (первого символа) по горизонтали</param>
-        public Player(char PlayerSkin, int posX = 1, int posY = 1) {
-            Position.posX = posX;
-            Position.posY = posY;
-            PrevPosition.posX = posX;
-            PrevPosition.posY = posY;
+
+        public Player(char PlayerSkin = '@', int posX = 1, int posY = 1) {
+            Point2D spawnPos = GetSpawnPoint(posX, posY);
+            Position.posX = spawnPos.posX;
+            Position.posY = spawnPos.posY;
+            PrevPosition.posX = Position.posX;
+            PrevPosition.posY = Position.posY;
             this.PlayerSkin = PlayerSkin;
         }
+
+        /// <summary>
+        /// Поиск в массиве индекса точки спавна игрока
+        /// </summary>
+        /// <param name="defaultPosX">Значение X заданное кодом</param>
+        /// <param name="defaultPosY">Значение Y заданное кодом</param>
+        /// <returns></returns>
+        private Point2D GetSpawnPoint(int defaultPosX, int defaultPosY)
+        {
+            int spawnPosX = defaultPosX;
+            int spawnPosY = defaultPosY;
+            if (spawnPosX != 1 || spawnPosY != 1)
+            {
+                return new Point2D(spawnPosX,spawnPosY);
+            }
+            return SearchIndexOfObject(ObjectType.Spawner);
+        }
+        /// <summary>
+        /// Поиск в массиве <see cref="LevelEnvironment.Map"/> индекс элемента переданного в <paramref name="objectType"/>
+        /// </summary>
+        /// <param name="objectType"> Тип игрового объекта для поиска </param>
+        /// <returns></returns>
+        private static Point2D SearchIndexOfObject(ObjectType objectType)
+        {
+            int spawnPosX = 1;
+            int spawnPosY = 1;
+            for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
+            {
+                for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
+                {
+                    if (LevelEnvironment.Map[i, j] == LevelEnvironment.objectTypes[(int)objectType])
+                    {
+                        spawnPosX = i;
+                        spawnPosY = j;
+                    }
+                }
+            }
+            return new Point2D(spawnPosX,spawnPosY);
+
+        }
+
+
 
         /// <summary>
         /// Метод в котором происходит обновление всех состояний
@@ -123,22 +167,16 @@ namespace Project_3310
         /// </summary>
         public void ClearTrace()
         {
-            if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Treasure] && LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Opened])
+            
+            if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] == LevelEnvironment.objectTypes[(int)ObjectType.NONE] )
             {
                 Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
                 Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.NONE]);
-
             }
-            else if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] == LevelEnvironment.objectTypes[(int)ObjectType.Treasure])
+            else
             {
                 Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
-                Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.Treasure]);
-            }
-            else if (LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] == LevelEnvironment.objectTypes[(int)ObjectType.Opened])
-            {
-                Console.SetCursorPosition(PrevPosition.posY, PrevPosition.posX);
-                Console.Write(LevelEnvironment.objectTypes[(int)ObjectType.Opened]);
-
+                Console.Write(LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY]);
             }
             //Для продолжения цикла смещения предыдущей позиции относительно текущей
             PrevPosition.posX = Position.posX;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Project_3310
+﻿namespace Project_3310
 {
     /// <summary>
     /// Класс представляющий информацию об уровне
@@ -19,7 +13,7 @@ namespace Project_3310
         /// <summary>
         /// Массив содержащий все возможные типы объекто
         /// </summary>
-        public static char[] objectTypes = { ' ', '#', '*', 'X', '^' };
+        public static char[] objectTypes = { ' ', '#', '*', 'X', '^', '~' };
         /*public LevelEnvironment(char[,] Map)
         {
             this.Map = Map;
@@ -30,23 +24,32 @@ namespace Project_3310
         /// </summary>
         /// <param name="path">Путь к текстовому файлу</param>
         /// <returns></returns>
-        public static void ReadMapFromFile(string path)
+        public static bool ReadMapFromFile(string path)
         {
-            if (File.Exists(path)) { 
-            string[] mapRaw = File.ReadAllLines(path);
-            char[,] map = new char[mapRaw.Length, GetMxLengthOfLine(mapRaw)];
-            for (int i = 0; i < map.GetLength(0); i++)
+            if (File.Exists(path))
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                string[] mapRaw = File.ReadAllLines(path);
+                if (mapRaw.Length < 3 && mapRaw[0].Length<3)
                 {
-                    map[i, j] = mapRaw[i][j];
+                    Map = new char[0, 0];
+                    return false;
                 }
-            }
-            Map = map;
+
+
+                char[,] map = new char[mapRaw.Length, GetMxLengthOfLine(mapRaw)];
+                for (int i = 0; i < map.GetLength(0); i++)
+                {
+                    for (int j = 0; j < map.GetLength(1); j++)
+                    {
+                        map[i, j] = mapRaw[i][j];
+                    }
+                }
+                Map = map;
+                return true;
             }
             else
             {
-                return;
+                return false;
             }
         }
 
