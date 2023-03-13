@@ -1,3 +1,3 @@
 [submodule "Project3310_Inventory"]
-	path = ../Project3310_Inventory
+	path = Project3310_Inventory
 	url = https://github.com/lobstore/Project3310_Inventory
