@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-
 namespace Project_3310
 {
     /// <summary>
@@ -244,7 +243,7 @@ namespace Project_3310
         public void OpenInventory()
         {
             //TODO выделить новый тред и вывести на вторую консоль инвентарь
-            //Process.Start(@"C:\\Users\\joe\\Documents\\GitHub\\Project3310_Inventory\\bin\\Debug\net6.0\\Project_3310_Inventory.exe");
+
             Send();
             Task.Run(Receive);
 
