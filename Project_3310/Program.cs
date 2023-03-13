@@ -1,5 +1,4 @@
-﻿#define MYTEST
-namespace Project_3310
+﻿namespace Project_3310
 {
     /// <summary>
     /// Перечисление всех существующих типов объектов
