@@ -43,12 +43,10 @@ namespace Project_3310
                  {'#', '#', '#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'  },
              };*/
 
-            #region Settings
             Console.CursorVisible = true;
             Player player;
             List<Behaviour> behaviours = new List<Behaviour>();
             bool isLevelLoaded = false;
-            #endregion
 
             if (LevelEnvironment.ReadMapFromFile("map.txt"))
             {

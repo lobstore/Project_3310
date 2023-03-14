@@ -1,7 +1,7 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Diagnostics;
 namespace Project_3310
 {
     /// <summary>
@@ -9,10 +9,12 @@ namespace Project_3310
     /// </summary>
     internal class Player : Behaviour
     {
+        private bool isInventoryOpened = false;
+        private Process? invetoryProcess { get; set; }
         /// <summary>
         /// Инвентарь игрока
         /// </summary>
-        public Inventory inventory { get; set; } = new Inventory(5);
+        public Inventory Inventory { get; set; } = new Inventory(5);
 
         /// <summary>
         /// Символьная константа отображающая игрока в консоли
@@ -147,7 +149,17 @@ namespace Project_3310
                     break;
                 case ConsoleKey.I:
                     ClearInputChar();
-                    OpenInventory();
+                    if (isInventoryOpened == false)
+                    {
+                        OpenInventory();
+                        isInventoryOpened = true;
+                    }
+                    else
+                    {
+                        CloseInventory();
+                        isInventoryOpened = false;
+                    }
+
                     break;
                 default:
                     ClearInputChar();
@@ -230,7 +242,7 @@ namespace Project_3310
         /// <param name="item"></param>
         public void PutInInventory(char item)
         {
-            inventory.slots.Add(item);
+            Inventory.slots.Add(item);
             Task.Run(Send);
         }
         /// <summary>
@@ -239,35 +251,72 @@ namespace Project_3310
         /// <param name="item"></param>
         public void RemoveFromInventory(char item)
         {
-            inventory.slots.Remove(item);
+            Inventory.slots.Remove(item);
         }
+        /// <summary>
+        /// Закрывает инвентарь убивая процесс Project3310_Inventory
+        /// </summary>
+        public void CloseInventory()
+        {
+            if (invetoryProcess != null)
+            {
+                invetoryProcess.Kill();
+            }
+        }
+        /// <summary>
+        /// Метод открытия инвентаря и установления UDP соединения для отслеживания изменений в инвентаре
+        /// </summary>
         public void OpenInventory()
         {
             //TODO выделить новый тред и вывести на вторую консоль инвентарь
             string path = @"../../../../Project3310_Inventory\bin\Debug\net6.0\Project3310_Inventory.exe";
-            ProcessStartInfo openInventoryProcessInfo= new ProcessStartInfo();
+            ProcessStartInfo openInventoryProcessInfo = new ProcessStartInfo();
             openInventoryProcessInfo.CreateNoWindow = false;
             openInventoryProcessInfo.WindowStyle = ProcessWindowStyle.Normal;
             openInventoryProcessInfo.FileName = path;
-            openInventoryProcessInfo.UseShellExecute= true;
-            openInventoryProcessInfo.Arguments = inventory.ToString();
-            Process.Start(openInventoryProcessInfo);
+            openInventoryProcessInfo.UseShellExecute = true;
+
+            invetoryProcess = Process.Start(openInventoryProcessInfo);
+
             Thread.Sleep(1000);
-                Send();
-            Task.Run(Receive);
+            Send();
+            Task.Run(
+                 async () =>
+                 {
+
+                     do
+                     {
+                         Inventory.slots = await Task.Run(Receive);
+                         if (invetoryProcess.HasExited)
+                         {
+                             isInventoryOpened = false;
+
+                         }
+                     } while (isInventoryOpened);
+
+
+                 });
+
 
         }
+        /// <summary>
+        /// Отправка текущего состояния инвентаря
+        /// </summary>
         async void Send()
         {
 
             using var udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            char[] message = inventory.slots.ToArray();
+            char[] message = Inventory.slots.ToArray();
             byte[] data = Encoding.UTF8.GetBytes(message);
             EndPoint remotePoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
             int bytes = await udpSocket.SendToAsync(data, SocketFlags.None, remotePoint);
             //Console.WriteLine($"Отправлено {bytes} байт");
         }
-        async void Receive()
+        /// <summary>
+        /// Получение изменений из инвентаря процесса Project3310_Inventory.exe
+        /// </summary>
+        /// <returns>Задача выполняющая возврат листа с инвентарем</returns>
+        async Task<List<char>> Receive()
         {
             using var udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
@@ -283,10 +332,9 @@ namespace Project_3310
                 EndPoint remoteIp = new IPEndPoint(IPAddress.Any, 0);
                 // получаем данные в массив data
                 var result = await udpSocket.ReceiveFromAsync(data, SocketFlags.None, remoteIp);
-                var message = Encoding.UTF8.GetString(data, 0, result.ReceivedBytes);
-                //Console.WriteLine($"Получено {result.ReceivedBytes} байт");
-                //Console.WriteLine($"Удаленный адрес: {result.RemoteEndPoint}");
-                /*Console.WriteLine(message); */    // выводим полученное сообщение
+                var message = Encoding.UTF8.GetChars(data, 0, result.ReceivedBytes);
+                Inventory.slots = new List<char>(message);
+                return Inventory.slots;
 
             }
         }
