@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Diagnostics;
 namespace Project_3310
 {
     /// <summary>
@@ -243,8 +244,16 @@ namespace Project_3310
         public void OpenInventory()
         {
             //TODO выделить новый тред и вывести на вторую консоль инвентарь
-
-            Send();
+            string path = @"../../../../Project3310_Inventory\bin\Debug\net6.0\Project3310_Inventory.exe";
+            ProcessStartInfo openInventoryProcessInfo= new ProcessStartInfo();
+            openInventoryProcessInfo.CreateNoWindow = false;
+            openInventoryProcessInfo.WindowStyle = ProcessWindowStyle.Normal;
+            openInventoryProcessInfo.FileName = path;
+            openInventoryProcessInfo.UseShellExecute= true;
+            openInventoryProcessInfo.Arguments = inventory.ToString();
+            Process.Start(openInventoryProcessInfo);
+            Thread.Sleep(1000);
+                Send();
             Task.Run(Receive);
 
         }
@@ -256,7 +265,7 @@ namespace Project_3310
             byte[] data = Encoding.UTF8.GetBytes(message);
             EndPoint remotePoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
             int bytes = await udpSocket.SendToAsync(data, SocketFlags.None, remotePoint);
-            Console.WriteLine($"Отправлено {bytes} байт");
+            //Console.WriteLine($"Отправлено {bytes} байт");
         }
         async void Receive()
         {
@@ -266,7 +275,7 @@ namespace Project_3310
             // начинаем прослушивание входящих сообщений
             udpSocket.Bind(localIP);
 
-            Console.WriteLine("UDP-сервер запущен...");
+            //Console.WriteLine("UDP-сервер запущен...");
             while (true)
             {
                 byte[] data = new byte[256]; // буфер для получаемых данных
@@ -275,9 +284,9 @@ namespace Project_3310
                 // получаем данные в массив data
                 var result = await udpSocket.ReceiveFromAsync(data, SocketFlags.None, remoteIp);
                 var message = Encoding.UTF8.GetString(data, 0, result.ReceivedBytes);
-                Console.WriteLine($"Получено {result.ReceivedBytes} байт");
-                Console.WriteLine($"Удаленный адрес: {result.RemoteEndPoint}");
-                Console.WriteLine(message);     // выводим полученное сообщение
+                //Console.WriteLine($"Получено {result.ReceivedBytes} байт");
+                //Console.WriteLine($"Удаленный адрес: {result.RemoteEndPoint}");
+                /*Console.WriteLine(message); */    // выводим полученное сообщение
 
             }
         }

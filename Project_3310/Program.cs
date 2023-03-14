@@ -1,4 +1,6 @@
-﻿namespace Project_3310
+﻿using System.Diagnostics;
+
+namespace Project_3310
 {
     /// <summary>
     /// Перечисление всех существующих типов объектов
@@ -16,7 +18,6 @@
     {
         static void Main(string[] args)
         {
-
             /* Пример карты
              * char[,] map =
              {
