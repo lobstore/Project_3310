@@ -10,10 +10,13 @@ namespace Project_3310
         Button NewGame = new Button("New Game", ButtonOption.NewGame);
         Button Exit = new Button("Exit", ButtonOption.Exit);
         List<Button> ButtonList = new List<Button>();
+        public static MainMenu instance;
+
         int iterator = 0;
 
         public MainMenu()
         {
+            instance = this;
             ButtonList.Add(NewGame);
             ButtonList.Add(Exit);
         }
@@ -49,6 +52,9 @@ namespace Project_3310
                 case ConsoleKey.Enter:
                     SelectedOptionActivation();
                     break;
+                case ConsoleKey.Spacebar:
+                    SelectedOptionActivation();
+                    break;
             };
 
         }
@@ -61,7 +67,7 @@ namespace Project_3310
             {
                 case ButtonOption.NewGame:
                     GameManager.behaviours.Remove(this);
-                    GameManager.LoadNewGame();
+                    GameManager.getInstance().LoadNewGame();
                     break;
                 case ButtonOption.Exit:
                     Console.Clear();

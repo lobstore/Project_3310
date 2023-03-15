@@ -162,7 +162,9 @@ namespace Project_3310
                         CloseInventory();
                         isInventoryOpened = false;
                     }
-
+                    break;
+                case ConsoleKey.Escape:
+                    GameManager.getInstance().GameEndWithEscape();
                     break;
                 default:
                     ClearInputChar();

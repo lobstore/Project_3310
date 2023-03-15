@@ -10,6 +10,8 @@
         /// </summary>
         public static char[,] Map;
 
+        public static List<Point2D> treasurePositions = new List<Point2D>();
+
         /// <summary>
         /// Массив содержащий все возможные типы объекто
         /// </summary>
@@ -24,7 +26,7 @@
         /// </summary>
         /// <param name="path">Путь к текстовому файлу</param>
         /// <returns></returns>
-        public static bool ReadMapFromFile(string path)
+        public static bool ReadMapFromFileAndGetAllTreasurePositions(string path)
         {
             if (File.Exists(path))
             {
@@ -36,7 +38,7 @@
                 }
 
 
-                char[,] map = new char[mapRaw.Length, GetMxLengthOfLine(mapRaw)];
+                char[,] map = new char[mapRaw.Length, GetMaxLengthOfLine(mapRaw)];
                 for (int i = 0; i < map.GetLength(0); i++)
                 {
                     for (int j = 0; j < map.GetLength(1); j++)
@@ -45,6 +47,7 @@
                     }
                 }
                 Map = map;
+                treasurePositions = GetAllTreasuresPositions(Map);
                 return true;
             }
             else
@@ -58,7 +61,7 @@
         /// </summary>
         /// <param name="lines">Массив строк в котором нужно найти самую длинную строку</param>
         /// <returns></returns>
-        public static int GetMxLengthOfLine(string[] lines)
+        private static int GetMaxLengthOfLine(string[] lines)
         {
             int maxLength = lines[0].Length;
 
@@ -70,6 +73,37 @@
                 }
             }
             return maxLength;
+        }
+
+        private static List<Point2D> GetAllTreasuresPositions(char[,] map)
+        {
+            List<Point2D> treasuresList = new List<Point2D>();
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (map[i, j] == (int)ObjectType.Treasure)
+                    {
+                        int x = i;
+                        int y = j;
+                        treasuresList.Add(new Point2D(x,y));
+                    } 
+                }
+            }
+            return treasuresList;
+        }
+
+        public static int CountTreasures()
+        {
+            int count = 0;
+            foreach (var cell in Map)
+            {
+                if (cell == objectTypes[(int)ObjectType.Treasure])
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
 }

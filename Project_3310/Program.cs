@@ -35,7 +35,7 @@ namespace Project_3310
             Console.CursorVisible= true;
             MainMenu menu = new MainMenu();
             GameManager.behaviours.Add(menu);
-
+            GameManager gameManager = GameManager.getInstance();
             /// Цикл обновления состояний всех объектов наследующих поведение
             while (true)
             {
