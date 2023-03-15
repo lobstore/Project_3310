@@ -2,20 +2,9 @@
 
 namespace Project_3310
 {
-    /// <summary>
-    /// Перечисление всех существующих типов объектов
-    /// </summary>
-    enum ObjectType
-    {
-        NONE = 0,
-        Wall,
-        Treasure,
-        Opened, 
-        Key,
-        Spawner
-    }
     internal class Program
     {
+
         static void Main(string[] args)
         {
             /* Пример карты
@@ -43,54 +32,18 @@ namespace Project_3310
                  {'#', '#', '#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'  },
              };*/
 
-            Console.CursorVisible = true;
-            Player player;
-            List<Behaviour> behaviours = new List<Behaviour>();
-            bool isLevelLoaded = false;
+            Console.CursorVisible= true;
+            MainMenu menu = new MainMenu();
+            GameManager.behaviours.Add(menu);
 
-            if (LevelEnvironment.ReadMapFromFile("map.txt"))
+            /// Цикл обновления состояний всех объектов наследующих поведение
+            while (true)
             {
-                // Загрузка карты в консоль
-                LoadLevelIntoConsole();
-                player = new Player();
-                behaviours.Add(player);
-                isLevelLoaded= true;
-            }
-            else
-            {
-                Console.WriteLine("Empty map");
-            }
-
-            if (isLevelLoaded)
-            {
-                // Обновление состояний игры (получение управления, перемещение игрока и т.д)
-                while (true)
+                for (int i = 0; i < GameManager.behaviours.Count; i++)
                 {
-                    foreach (var behaviour in behaviours)
-                    {
-                        behaviour.Update();
-                    }
-
+                   GameManager.behaviours[i].Update();
                 }
             }
-
-        }
-        /// <summary>
-        /// Метод загрузки игрового поля в консоль
-        /// </summary>
-        /// <param name="levelEnv"></param>
-        private static void LoadLevelIntoConsole()
-        {
-                Console.SetCursorPosition(0, 0);
-                for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
-                {
-                    for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
-                    {
-                        Console.Write(LevelEnvironment.Map[i, j]);
-                    }
-                    Console.WriteLine();
-                }
-            
         }
     }
 }

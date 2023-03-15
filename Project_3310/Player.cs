@@ -10,6 +10,9 @@ namespace Project_3310
     internal class Player : Behaviour
     {
         private bool isInventoryOpened = false;
+        /// <summary>
+        /// Хранение процесса вызванного открытием инвентаря
+        /// </summary>
         private Process? invetoryProcess { get; set; }
         /// <summary>
         /// Инвентарь игрока
@@ -92,7 +95,7 @@ namespace Project_3310
 
 
         /// <summary>
-        /// Метод в котором происходит обновление всех состояний
+        /// Метод в котором происходит обновление состояния игрока
         /// </summary>
         override public void Update()
         {
