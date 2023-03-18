@@ -12,21 +12,27 @@ namespace Project_3310
         Treasure,
         Opened,
         Key,
-        Spawner
+        Spawner,
+        Player,
+        NPC
     }
     /// <summary>
     /// Класс который управляет игрой
     /// </summary>
-    internal class GameManager : Behaviour
+    internal class GameManager
     {
-        public static List<Point2D> treasuresPositions = new List<Point2D>();
-        public static Player? player;
-        public static List<Behaviour> behaviours = new List<Behaviour>();
-        static bool isLeveLoaded = false;
-        private static GameManager instance;
+        private static List<Point2D> treasuresPositions = new List<Point2D>();
+        private static Player? player;
+        public static NPC? npc;
+        private static List<Behaviour> behaviours = new List<Behaviour>();
+        private static bool isLeveLoaded = false;
+        private static MainMenu mainMenu = new MainMenu();
+        private static GameManager instance = new GameManager();
+        public static bool isGameStarted = false;
+
         private GameManager()
         {
-
+            AddGameObjectIntoUpdatePool(mainMenu);
         }
 
         public static GameManager getInstance()
@@ -34,9 +40,18 @@ namespace Project_3310
             if (instance == null)
             {
                 instance = new GameManager();
-                behaviours.Add(instance);
+                
             }
             return instance;
+        }
+
+        private static void AddGameObjectIntoUpdatePool(Behaviour behaviour)
+        {
+            behaviours.Add(behaviour);
+        }
+        private static void RemoveGameObjectFromUpdatePool(Behaviour behaviour)
+        {
+            behaviours.Remove(behaviour);
         }
         /// <summary>
         /// Загружает новую игру
@@ -48,6 +63,7 @@ namespace Project_3310
             //Если карта была успешно загружена из файла то...
             if (LevelEnvironment.ReadMapFromFileAndGetAllTreasurePositions("map.txt"))
             {
+
                 if (LevelEnvironment.treasurePositions.Count != 0)
                 {
                     treasuresPositions = LevelEnvironment.treasurePositions;
@@ -55,7 +71,9 @@ namespace Project_3310
                 // Загрузка карты в консоль
                 LoadLevelIntoConsole();
                 player = new Player();
-                behaviours.Add(player);
+                npc = new Henry();
+                AddGameObjectIntoUpdatePool(player);
+                AddGameObjectIntoUpdatePool((Henry)npc);
                 isLeveLoaded = true;
             }
             else
@@ -74,20 +92,27 @@ namespace Project_3310
         {
             Console.WriteLine("C");
             Console.SetCursorPosition(0, 0);
-            for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
-            {
-                for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
+
+
+                for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
                 {
-                    Console.Write(LevelEnvironment.Map[i, j]);
+                    for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
+                    {
+                        Console.Write(LevelEnvironment.Map[i, j]);
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
-            }
+            
 
         }
 
-        public override void Update()
+        public void UpdateSender()
         {
-
+            for (int i = 0; i < behaviours.Count; i++)
+            {
+                behaviours[i].Update();
+                
+            }
             if (isLeveLoaded == true)
             {
                 if (LevelEnvironment.CountTreasures() == 0)
@@ -106,7 +131,7 @@ namespace Project_3310
             Console.WriteLine("\nPress eny key to exit main menu");
             Console.ReadKey();
             Console.Clear();
-            behaviours.Add(MainMenu.instance);
+            AddGameObjectIntoUpdatePool(mainMenu);
         }
 
         public void GameEndWithEscape()
@@ -115,20 +140,30 @@ namespace Project_3310
             Console.Clear();
             Console.WriteLine("C");
             Console.WriteLine("Are you sure?");
-            Thread.Sleep(1000);
-            Console.WriteLine("\nY for yes, another button for No");
-            ConsoleKeyInfo pressedKey = Console.ReadKey();
+            Thread.Sleep(500);
+            Console.WriteLine("\nY or Enter for exit, another button for No");
+            ConsoleKeyInfo pressedKey = Console.ReadKey(true);
             switch (pressedKey.Key)
             {
                 case ConsoleKey.Y:
-                    Console.Clear();
-                    behaviours.Clear();
-                    behaviours.Add(MainMenu.instance);
+                    ExitToMainMenu();
+                    break;
+                case ConsoleKey.Enter:
+                    ExitToMainMenu();
                     break;
                 default:
                     LoadLevelIntoConsole();
                     break;
             }
+        }
+
+        private void ExitToMainMenu()
+        {
+            isGameStarted = false;
+            isLeveLoaded = false;
+            Console.Clear();
+            behaviours.Clear();
+            AddGameObjectIntoUpdatePool(mainMenu);
         }
     }
 }

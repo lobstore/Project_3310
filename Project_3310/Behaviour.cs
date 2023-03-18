@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace Project_3310
 {
-    internal abstract class Behaviour
+    /// <summary>
+    /// Базовый интерфейс для всех объектов, имеющих игровую логику
+    /// </summary>
+    internal interface Behaviour
     {
-        public abstract void Update();
+        /// <summary>
+        /// Цикл обновлений каждого объекта
+        /// </summary>
+        public void Update()
+        {
+            return;
+        }
     }
 }

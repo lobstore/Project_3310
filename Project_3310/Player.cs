@@ -17,7 +17,7 @@ namespace Project_3310
         /// <summary>
         /// Инвентарь игрока
         /// </summary>
-        public Inventory Inventory { get; set; } = new Inventory(5);
+        private Inventory Inventory { get; set; } = new Inventory(5);
 
         /// <summary>
         /// Символьная константа отображающая игрока в консоли
@@ -27,7 +27,7 @@ namespace Project_3310
         /// <summary>
         /// Текущая позиция персонажа на игровом поле
         /// </summary>
-        public Point2D Position { get; set; } = new Point2D();
+        private Point2D Position { get; set; } = new Point2D();
 
         /// <summary>
         /// Предудущая позиция персонажа на игровом поле
@@ -97,11 +97,11 @@ namespace Project_3310
         /// <summary>
         /// Метод в котором происходит обновление состояния игрока
         /// </summary>
-        override public void Update()
+        public void Update()
         {
             MovePlayer();
             InputManagerAndCollideDetector();
-            ClearTrace();
+
         }
 
         /// <summary>
@@ -109,6 +109,7 @@ namespace Project_3310
         /// </summary>
         public void MovePlayer()
         {
+            ClearTrace();
             Console.SetCursorPosition(Position.posY, Position.posX);
             Console.Write(PlayerSkin);
         }
@@ -119,7 +120,7 @@ namespace Project_3310
         public void InputManagerAndCollideDetector()
         {
             ConsoleKeyInfo pressedKey = new ConsoleKeyInfo();
-            pressedKey = Console.ReadKey();
+            pressedKey = Console.ReadKey(true);
             switch (pressedKey.Key)
             {
                 case ConsoleKey.UpArrow:
@@ -147,11 +148,9 @@ namespace Project_3310
                     }
                     break;
                 case ConsoleKey.Spacebar:
-                    ClearInputChar();
                     PickUp();
                     break;
                 case ConsoleKey.I:
-                    ClearInputChar();
                     if (isInventoryOpened == false)
                     {
                         OpenInventory();
@@ -166,19 +165,15 @@ namespace Project_3310
                 case ConsoleKey.Escape:
                     GameManager.getInstance().GameEndWithEscape();
                     break;
+                case ConsoleKey.E:
+                    if (LevelEnvironment.Map[Position.posX, Position.posY + 1] == LevelEnvironment.objectTypes[(int)ObjectType.NPC])
+                    {
+                        GameManager.npc.Chat();
+                    }
+                    break;
                 default:
-                    ClearInputChar();
                     break;
             };
-        }
-
-        /// <summary>
-        /// Очищает ввод символа в следующей от игрока клетке
-        /// </summary>
-        public void ClearInputChar()
-        {
-            Console.SetCursorPosition(Position.posY + 1, Position.posX);
-            Console.Write(LevelEnvironment.Map[Position.posX, Position.posY + 1]);
         }
 
         /// <summary>

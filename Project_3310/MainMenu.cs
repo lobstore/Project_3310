@@ -10,21 +10,23 @@ namespace Project_3310
         Button NewGame = new Button("New Game", ButtonOption.NewGame);
         Button Exit = new Button("Exit", ButtonOption.Exit);
         List<Button> ButtonList = new List<Button>();
-        public static MainMenu instance;
 
         int iterator = 0;
 
         public MainMenu()
         {
-            instance = this;
             ButtonList.Add(NewGame);
             ButtonList.Add(Exit);
         }
         /// <summary>
         /// Обновление состояния главного меню
         /// </summary>
-        public override void Update()
+        public void Update()
         {
+            if (GameManager.isGameStarted)
+            {
+                return;
+            }
             Console.SetCursorPosition(0, 0);
             foreach (var button in ButtonList)
             {
@@ -32,7 +34,7 @@ namespace Project_3310
             }
             SetButtonPointer();
             ConsoleKeyInfo pressedKey = new ConsoleKeyInfo();
-            pressedKey = Console.ReadKey();
+            pressedKey = Console.ReadKey(true);
             switch (pressedKey.Key)
             {
                 case ConsoleKey.DownArrow:
@@ -66,12 +68,12 @@ namespace Project_3310
             switch (ButtonList[iterator].OptionId)
             {
                 case ButtonOption.NewGame:
-                    GameManager.behaviours.Remove(this);
+                    GameManager.isGameStarted = true;
                     GameManager.getInstance().LoadNewGame();
                     break;
                 case ButtonOption.Exit:
                     Console.Clear();
-                    Process.GetCurrentProcess().Kill();
+                    Environment.Exit(0);
                     break;
             }
         }

@@ -8,14 +8,14 @@
         /// <summary>
         /// Массив содержыщий игровое поле в виде символьных знаков
         /// </summary>
-        public static char[,] Map;
+        public static char[,]? Map;
 
         public static List<Point2D> treasurePositions = new List<Point2D>();
 
         /// <summary>
         /// Массив содержащий все возможные типы объекто
         /// </summary>
-        public static char[] objectTypes = { ' ', '#', '*', 'X', '^', '~' };
+        public static char[] objectTypes = { ' ', '#', '*', 'X', '^', '~', '@', '&' };
         /*public LevelEnvironment(char[,] Map)
         {
             this.Map = Map;
@@ -31,7 +31,7 @@
             if (File.Exists(path))
             {
                 string[] mapRaw = File.ReadAllLines(path);
-                if (mapRaw.Length < 3 && mapRaw[0].Length<3)
+                if (mapRaw.Length < 3 && mapRaw[0].Length < 3)
                 {
                     Map = new char[0, 0];
                     return false;
@@ -86,8 +86,8 @@
                     {
                         int x = i;
                         int y = j;
-                        treasuresList.Add(new Point2D(x,y));
-                    } 
+                        treasuresList.Add(new Point2D(x, y));
+                    }
                 }
             }
             return treasuresList;
@@ -96,11 +96,14 @@
         public static int CountTreasures()
         {
             int count = 0;
-            foreach (var cell in Map)
+            if (Map != null)
             {
-                if (cell == objectTypes[(int)ObjectType.Treasure])
+                foreach (var cell in Map)
                 {
-                    count++;
+                    if (cell == objectTypes[(int)ObjectType.Treasure])
+                    {
+                        count++;
+                    }
                 }
             }
             return count;
