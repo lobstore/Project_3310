@@ -1,33 +1,36 @@
-﻿using System.Diagnostics;
-
-namespace Project_3310
+﻿namespace Project_3310
 {
     /// <summary>
     /// Класс для реализации логики главного меню
     /// </summary>
     internal class MainMenu : Behaviour
     {
+        string Title = "\r ______     ______     ______     __     __        ______     ______     ______     ______     ______   ______    \r\n/\\  __ \\   /\\  ___\\   /\\  ___\\   /\\ \\   /\\ \\      /\\  ___\\   /\\  ___\\   /\\  ___\\   /\\  __ \\   /\\  == \\ /\\  ___\\   \r\n\\ \\  __ \\  \\ \\___  \\  \\ \\ \\____  \\ \\ \\  \\ \\ \\     \\ \\  __\\   \\ \\___  \\  \\ \\ \\____  \\ \\  __ \\  \\ \\  _-/ \\ \\  __\\   \r\n \\ \\_\\ \\_\\  \\/\\_____\\  \\ \\_____\\  \\ \\_\\  \\ \\_\\     \\ \\_____\\  \\/\\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\    \\ \\_____\\ \r\n  \\/_/\\/_/   \\/_____/   \\/_____/   \\/_/   \\/_/      \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/   \\/_/     \\/_____/ \r\n                                                                                                                  \r\n";
         Button NewGame = new Button("New Game", ButtonOption.NewGame);
         Button Exit = new Button("Exit", ButtonOption.Exit);
         List<Button> ButtonList = new List<Button>();
-
+        int shift = 7;
         int iterator = 0;
 
         public MainMenu()
         {
             ButtonList.Add(NewGame);
             ButtonList.Add(Exit);
+
         }
         /// <summary>
         /// Обновление состояния главного меню
         /// </summary>
         public void Update()
         {
+
             if (GameManager.isGameStarted)
             {
                 return;
             }
             Console.SetCursorPosition(0, 0);
+            Console.WriteLine(Title);
+            Console.SetCursorPosition(0, shift);
             foreach (var button in ButtonList)
             {
                 Console.WriteLine(button.Text);
@@ -82,7 +85,7 @@ namespace Project_3310
         /// </summary>
         private void SetButtonPointer()
         {
-            Console.SetCursorPosition(ButtonList[iterator].Text.Length + 1, iterator);
+            Console.SetCursorPosition(ButtonList[iterator].Text.Length + 1, iterator + shift);
             Console.Write("*");
         }
 
@@ -91,7 +94,7 @@ namespace Project_3310
         /// </summary>
         private void CleanButtonPointer()
         {
-            Console.SetCursorPosition(ButtonList[iterator].Text.Length + 1, iterator);
+            Console.SetCursorPosition(ButtonList[iterator].Text.Length + 1, iterator + shift);
             Console.Write(' ');
         }
     }

@@ -40,15 +40,22 @@ namespace Project_3310
             if (instance == null)
             {
                 instance = new GameManager();
-                
+
             }
             return instance;
         }
-
+        /// <summary>
+        /// Добавление объекта в пул обновлений
+        /// </summary>
+        /// <param name="behaviour"></param>
         private static void AddGameObjectIntoUpdatePool(Behaviour behaviour)
         {
             behaviours.Add(behaviour);
         }
+        /// <summary>
+        /// Удаление объекта из пула обновлений
+        /// </summary>
+        /// <param name="behaviour"></param>
         private static void RemoveGameObjectFromUpdatePool(Behaviour behaviour)
         {
             behaviours.Remove(behaviour);
@@ -59,7 +66,6 @@ namespace Project_3310
         public void LoadNewGame()
         {
 
-            Console.CursorVisible = false;
             //Если карта была успешно загружена из файла то...
             if (LevelEnvironment.ReadMapFromFileAndGetAllTreasurePositions("map.txt"))
             {
@@ -90,31 +96,31 @@ namespace Project_3310
         /// </summary>
         private void LoadLevelIntoConsole()
         {
-            Console.WriteLine("C");
             Console.SetCursorPosition(0, 0);
-
-
-                for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
+            Console.SetBufferSize(LevelEnvironment.Map.GetLength(1) * 2, LevelEnvironment.Map.GetLength(0) * 2);
+            for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
+            {
+                for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
                 {
-                    for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
-                    {
-                        Console.Write(LevelEnvironment.Map[i, j]);
-                    }
-                    Console.WriteLine();
+                    Console.Write(LevelEnvironment.Map[i, j]);
                 }
-            
+                Console.WriteLine();
+            }
+
 
         }
-
+        /// <summary>
+        /// Цикл обновлений
+        /// </summary>
         public void UpdateSender()
         {
             for (int i = 0; i < behaviours.Count; i++)
             {
                 behaviours[i].Update();
-                
             }
             if (isLeveLoaded == true)
             {
+                CameraMover(player.pressedKey);
                 if (LevelEnvironment.CountTreasures() == 0)
                 {
                     GameEndWithWin();
@@ -122,20 +128,44 @@ namespace Project_3310
             }
         }
 
+        private void CameraMover(ConsoleKeyInfo cki)
+        {
+
+            switch (cki.Key)
+            {
+                case ConsoleKey.LeftArrow:
+                    if (Console.WindowLeft > 0 && Console.WindowLeft > player.Position.posY - Console.WindowWidth / 2)
+                        Console.SetWindowPosition(Console.WindowLeft - 1, Console.WindowTop);
+                    break;
+                case ConsoleKey.UpArrow:
+                    if (Console.WindowTop > 0 && Console.WindowTop > player.Position.posX - Console.WindowHeight / 2)
+                        Console.SetWindowPosition(Console.WindowLeft, Console.WindowTop - 1);
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (Console.WindowLeft < player.Position.posY - Console.WindowWidth / 2 && Console.WindowLeft < LevelEnvironment.Map.GetLength(1) - Console.WindowWidth)
+                        Console.SetWindowPosition(Console.WindowLeft + 1, Console.WindowTop);
+                    break;
+                case ConsoleKey.DownArrow:
+                    if (Console.WindowTop < player.Position.posX - Console.WindowHeight / 2 && Console.WindowTop < LevelEnvironment.Map.GetLength(0) - Console.WindowHeight)
+                        Console.SetWindowPosition(Console.WindowLeft, Console.WindowTop + 1);
+                    break;
+            }
+        }
+        /// <summary>
+        /// Выход в главное меню при победе
+        /// </summary>
         private void GameEndWithWin()
         {
-            isGameStarted = false;
-            isLeveLoaded = false;
-            behaviours.Clear();
-            Console.Clear();
+            ExitToMainMenu();
             Console.WriteLine("You have won");
             Thread.Sleep(1000);
             Console.WriteLine("\nPress eny key to exit main menu");
             Console.ReadKey();
             Console.Clear();
-            AddGameObjectIntoUpdatePool(mainMenu);
         }
-
+        /// <summary>
+        /// Выход в клавное меню при загруженном уровне кнопкой Escape
+        /// </summary>
         public void GameEndWithEscape()
         {
 
@@ -157,7 +187,9 @@ namespace Project_3310
                     break;
             }
         }
-
+        /// <summary>
+        /// Выход в главное меню
+        /// </summary>
         private void ExitToMainMenu()
         {
             isGameStarted = false;
@@ -166,5 +198,6 @@ namespace Project_3310
             behaviours.Clear();
             AddGameObjectIntoUpdatePool(mainMenu);
         }
+
     }
 }

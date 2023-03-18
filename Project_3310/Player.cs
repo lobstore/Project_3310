@@ -9,6 +9,8 @@ namespace Project_3310
     /// </summary>
     internal class Player : Behaviour
     {
+        public ConsoleKeyInfo pressedKey = new ConsoleKeyInfo();
+
         private bool isInventoryOpened = false;
         /// <summary>
         /// Хранение процесса вызванного открытием инвентаря
@@ -27,7 +29,7 @@ namespace Project_3310
         /// <summary>
         /// Текущая позиция персонажа на игровом поле
         /// </summary>
-        private Point2D Position { get; set; } = new Point2D();
+        public Point2D Position { get; set; } = new Point2D();
 
         /// <summary>
         /// Предудущая позиция персонажа на игровом поле
@@ -97,7 +99,7 @@ namespace Project_3310
         /// </summary>
         public void InputManagerAndCollideDetector()
         {
-            ConsoleKeyInfo pressedKey = new ConsoleKeyInfo();
+
             pressedKey = Console.ReadKey(true);
             switch (pressedKey.Key)
             {
