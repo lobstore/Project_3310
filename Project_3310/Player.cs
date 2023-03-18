@@ -66,31 +66,9 @@ namespace Project_3310
             {
                 return new Point2D(spawnPosX, spawnPosY);
             }
-            return SearchIndexOfObject(ObjectType.Spawner);
+            return LevelEnvironment.SearchIndexOfObject(ObjectType.Spawner);
         }
-        /// <summary>
-        /// Поиск в массиве <see cref="LevelEnvironment.Map"/> индекс элемента переданного в <paramref name="objectType"/>
-        /// </summary>
-        /// <param name="objectType"> Тип игрового объекта для поиска </param>
-        /// <returns></returns>
-        private static Point2D SearchIndexOfObject(ObjectType objectType)
-        {
-            int spawnPosX = 1;
-            int spawnPosY = 1;
-            for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
-            {
-                for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
-                {
-                    if (LevelEnvironment.Map[i, j] == LevelEnvironment.objectTypes[(int)objectType])
-                    {
-                        spawnPosX = i;
-                        spawnPosY = j;
-                    }
-                }
-            }
-            return new Point2D(spawnPosX, spawnPosY);
 
-        }
 
 
 

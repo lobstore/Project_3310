@@ -23,11 +23,17 @@ namespace Project_3310
             }
 
         }
+        /// <summary>
+        /// Предыдущий индекс списка
+        /// </summary>
         int prev = 0;
         override public void Update()
         {
 
         }
+        /// <summary>
+        /// Метод для обмена любезностями с нпс
+        /// </summary>
         override public void Chat()
         {
             Console.SetCursorPosition(Position.posY, Position.posX + 1);

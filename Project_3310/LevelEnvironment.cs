@@ -47,7 +47,7 @@
                     }
                 }
                 Map = map;
-                treasurePositions = GetAllTreasuresPositions(Map);
+                treasurePositions = GetAllTreasuresPositions();
                 return true;
             }
             else
@@ -74,23 +74,58 @@
             }
             return maxLength;
         }
-
-        private static List<Point2D> GetAllTreasuresPositions(char[,] map)
+        /// <summary>
+        /// </summary>
+        /// <param name="map"></param>
+        /// <returns>Список координат всех сокровищ</returns>
+        private static List<Point2D> GetAllTreasuresPositions()
         {
-            List<Point2D> treasuresList = new List<Point2D>();
-            for (int i = 0; i < map.GetLength(0); i++)
+            //List<Point2D> treasuresList = new List<Point2D>();
+            //for (int i = 0; i < map.GetLength(0); i++)
+            //{
+            //    for (int j = 0; j < map.GetLength(1); j++)
+            //    {
+            //        if (map[i, j] == (int)ObjectType.Treasure)
+            //        {
+            //            int x = i;
+            //            int y = j;
+            //            treasuresList.Add(new Point2D(x, y));
+            //        }
+            //    }
+            //}
+            return SearchIndexesOfObjects(ObjectType.Treasure);
+        }
+        /// <summary>
+        /// Поиск в массиве <see cref="LevelEnvironment.Map"/> индекс элемента переданного в <paramref name="objectType"/>
+        /// </summary>
+        /// <param name="objectType"> Тип игрового объекта для поиска </param>
+        /// <returns>Позиция игрового объекта в массиве</returns>
+        public static Point2D SearchIndexOfObject(ObjectType objectType)
+        {
+            int posX = 1;
+            int posY = 1;
+            for (int i = 0; i < Map.GetLength(0); i++)
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                for (int j = 0; j < Map.GetLength(1); j++)
                 {
-                    if (map[i, j] == (int)ObjectType.Treasure)
+                    if (Map[i, j] == objectTypes[(int)objectType])
                     {
-                        int x = i;
-                        int y = j;
-                        treasuresList.Add(new Point2D(x, y));
+                        posX = i;
+                        posY = j;
                     }
                 }
             }
-            return treasuresList;
+            return new Point2D(posX, posY);
+        }
+
+        public static List<Point2D> SearchIndexesOfObjects(ObjectType objectType)
+        {
+            List<Point2D> list = new List<Point2D>();
+            foreach (var item in Map)
+            {
+                list.Add (SearchIndexOfObject(objectType));
+            }
+            return list;
         }
 
         public static int CountTreasures()

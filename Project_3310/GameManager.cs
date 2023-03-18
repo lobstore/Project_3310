@@ -17,7 +17,7 @@ namespace Project_3310
         NPC
     }
     /// <summary>
-    /// Класс который управляет игрой
+    /// Класс для управления состояниями
     /// </summary>
     internal class GameManager
     {
@@ -124,6 +124,8 @@ namespace Project_3310
 
         private void GameEndWithWin()
         {
+            isGameStarted = false;
+            isLeveLoaded = false;
             behaviours.Clear();
             Console.Clear();
             Console.WriteLine("You have won");
@@ -138,7 +140,6 @@ namespace Project_3310
         {
 
             Console.Clear();
-            Console.WriteLine("C");
             Console.WriteLine("Are you sure?");
             Thread.Sleep(500);
             Console.WriteLine("\nY or Enter for exit, another button for No");
