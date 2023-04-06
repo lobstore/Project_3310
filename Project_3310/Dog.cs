@@ -54,13 +54,15 @@ namespace Project_3310
 
         public void Move()
         {
+            if (Console.WindowLeft < Position.posY && Console.WindowTop < Position.posX)
+            {
+                LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NONE];
+                LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.Dog];
 
-            LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NONE];
-            LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.Dog];
-
-            ClearTrace();
-            Console.SetCursorPosition(Position.posY, Position.posX);
-            Console.Write(Skin);
+                ClearTrace();
+                Console.SetCursorPosition(Position.posY, Position.posX);
+                Console.Write(Skin);
+            }
         }
         public void InputManagerAndCollideDetector()
         {

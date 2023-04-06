@@ -29,10 +29,19 @@ namespace Project_3310
                 {
                     if (LevelEnvironment.Map[i, j] == LevelEnvironment.objectTypes[(int)ObjectType.NPC])
                     {
-                        Position = new Point2D(i, j);
-                        PrevPosition.posX = Position.posX;
-                        PrevPosition.posY = Position.posY;
-                        Skin = LevelEnvironment.Map[i, j];
+                        if (i>0&&j>0)
+                        {
+                            Position = new Point2D(i, j);
+                        }
+                        else
+                        {
+                            Position = new Point2D(1, 1);
+                        }
+                            PrevPosition.posX = Position.posX;
+                            PrevPosition.posY = Position.posY;
+                            Skin = LevelEnvironment.Map[i, j];
+                        
+
                     }
                 }
 
@@ -43,23 +52,27 @@ namespace Project_3310
         override public void Update()
         {
             Thread.Sleep(7);
-            
+
                 InputManagerAndCollideDetector();
         }
 
         public void Move()
         {
 
-            LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NONE];
-            LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NPC];
+            
+            if (Console.WindowLeft < Position.posY && Console.WindowTop < Position.posX)
+            {
+                LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NONE];
+                LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NPC];
+                ClearTrace();
+                Console.SetCursorPosition(Position.posY, Position.posX);
+                Console.Write(Skin);
+            }
 
-            ClearTrace();
-            Console.SetCursorPosition(Position.posY, Position.posX);
-            Console.Write(Skin);
         }
         public void InputManagerAndCollideDetector()
         {
-            switch (new Random().Next(500))
+            switch (new Random().Next(50))
             {
                 case 0:
                     if (LevelEnvironment.Map[Position.posX - 1, Position.posY] == LevelEnvironment.objectTypes[(int)ObjectType.NONE])
