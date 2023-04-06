@@ -15,7 +15,7 @@
         /// <summary>
         /// Массив содержащий все возможные типы объекто
         /// </summary>
-        public static char[] objectTypes = { ' ', '#', '*', 'X', '^', '~', '@', '&' };
+        public static char[] objectTypes = { ' ', '#', '*', 'X', '^', '~', 'i', '&', '@' };
         /*public LevelEnvironment(char[,] Map)
         {
             this.Map = Map;

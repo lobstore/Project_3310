@@ -8,6 +8,7 @@
         string Title = "\r ______     ______     ______     __     __        ______     ______     ______     ______     ______   ______    \r\n/\\  __ \\   /\\  ___\\   /\\  ___\\   /\\ \\   /\\ \\      /\\  ___\\   /\\  ___\\   /\\  ___\\   /\\  __ \\   /\\  == \\ /\\  ___\\   \r\n\\ \\  __ \\  \\ \\___  \\  \\ \\ \\____  \\ \\ \\  \\ \\ \\     \\ \\  __\\   \\ \\___  \\  \\ \\ \\____  \\ \\  __ \\  \\ \\  _-/ \\ \\  __\\   \r\n \\ \\_\\ \\_\\  \\/\\_____\\  \\ \\_____\\  \\ \\_\\  \\ \\_\\     \\ \\_____\\  \\/\\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\    \\ \\_____\\ \r\n  \\/_/\\/_/   \\/_____/   \\/_____/   \\/_/   \\/_/      \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/   \\/_/     \\/_____/ \r\n                                                                                                                  \r\n";
         Button NewGame = new Button("New Game", ButtonOption.NewGame);
         Button Exit = new Button("Exit", ButtonOption.Exit);
+        Button Continue = new Button("Continue", ButtonOption.Continue);
         List<Button> ButtonList = new List<Button>();
         int shift = 7;
         int iterator = 0;
@@ -15,8 +16,9 @@
         public MainMenu()
         {
             ButtonList.Add(NewGame);
+            ButtonList.Add(Continue);
             ButtonList.Add(Exit);
-
+            
         }
         /// <summary>
         /// Обновление состояния главного меню
@@ -90,7 +92,7 @@
         }
 
         /// <summary>
-        /// Очищает курсор возле кнопки
+        /// Очищает символ-указатель  напротив выбранной кнопки
         /// </summary>
         private void CleanButtonPointer()
         {

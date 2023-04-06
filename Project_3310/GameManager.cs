@@ -14,7 +14,8 @@ namespace Project_3310
         Key,
         Spawner,
         Player,
-        NPC
+        NPC,
+        Dog
     }
     /// <summary>
     /// Класс для управления состояниями
@@ -22,14 +23,15 @@ namespace Project_3310
     internal class GameManager
     {
         private static List<Point2D> treasuresPositions = new List<Point2D>();
-        private static Player? player;
-        public static NPC? npc;
+        private static Player? player = null;
+        public static NPC? npc = null;
+        public static Dog? dog = null;
         private static List<Behaviour> behaviours = new List<Behaviour>();
         private static bool isLeveLoaded = false;
         private static MainMenu mainMenu = new MainMenu();
         private static GameManager instance = new GameManager();
         public static bool isGameStarted = false;
-
+        public static bool isGamePaused = false;
         private GameManager()
         {
             AddGameObjectIntoUpdatePool(mainMenu);
@@ -40,7 +42,6 @@ namespace Project_3310
             if (instance == null)
             {
                 instance = new GameManager();
-
             }
             return instance;
         }
@@ -50,7 +51,8 @@ namespace Project_3310
         /// <param name="behaviour"></param>
         private static void AddGameObjectIntoUpdatePool(Behaviour behaviour)
         {
-            behaviours.Add(behaviour);
+            if (behaviour != null)
+                behaviours.Add(behaviour);
         }
         /// <summary>
         /// Удаление объекта из пула обновлений
@@ -78,9 +80,19 @@ namespace Project_3310
                 LoadLevelIntoConsole();
                 player = new Player();
                 npc = new Henry();
-                AddGameObjectIntoUpdatePool(player);
+                dog = new Dog();
+                RemoveGameObjectFromUpdatePool(mainMenu);
+                //AddGameObjectIntoUpdatePool(player);
                 AddGameObjectIntoUpdatePool((Henry)npc);
+                AddGameObjectIntoUpdatePool(dog);
                 isLeveLoaded = true;
+                Task.Run(() =>
+                {
+                    while (isGameStarted && isGamePaused == false && isLeveLoaded)
+                    {
+                        player.InputManagerAndCollideDetector();
+                    }
+                });
             }
             else
             {
@@ -114,16 +126,21 @@ namespace Project_3310
         /// </summary>
         public void UpdateSender()
         {
-            for (int i = 0; i < behaviours.Count; i++)
+            if (isGamePaused == false)
             {
-                behaviours[i].Update();
-            }
-            if (isLeveLoaded == true)
-            {
-                CameraMover(player.pressedKey);
-                if (LevelEnvironment.CountTreasures() == 0)
+
+
+                for (int i = 0; i < behaviours.Count; i++)
                 {
-                    GameEndWithWin();
+                    behaviours[i].Update();
+                }
+                if (isLeveLoaded == true)
+                {
+                    CameraMover(player.pressedKey);
+                    if (LevelEnvironment.CountTreasures() == 0)
+                    {
+                        GameEndWithWin();
+                    }
                 }
             }
         }
@@ -168,7 +185,7 @@ namespace Project_3310
         /// </summary>
         public void GameEndWithEscape()
         {
-
+            isGamePaused = true;
             Console.Clear();
             Console.WriteLine("Are you sure?");
             Thread.Sleep(500);
@@ -184,6 +201,7 @@ namespace Project_3310
                     break;
                 default:
                     LoadLevelIntoConsole();
+                    isGamePaused = false;
                     break;
             }
         }
@@ -192,6 +210,7 @@ namespace Project_3310
         /// </summary>
         private void ExitToMainMenu()
         {
+            isGamePaused = false;
             isGameStarted = false;
             isLeveLoaded = false;
             Console.Clear();

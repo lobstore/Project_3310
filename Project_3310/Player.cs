@@ -44,7 +44,7 @@ namespace Project_3310
         /// <param name="posX">Смещение от начала координат консоли (первого символа) по вертикали</param>
         /// <param name="posY">Смещение от начала координат консоли (первого символа) по горизонтали</param>
 
-        public Player(char PlayerSkin = '@', int posX = 1, int posY = 1)
+        public Player(char PlayerSkin = 'i', int posX = 1, int posY = 1)
         {
             Point2D spawnPos = GetSpawnPoint(posX, posY);
             Position.posX = spawnPos.posX;
@@ -57,9 +57,9 @@ namespace Project_3310
         /// <summary>
         /// Поиск в массиве индекса точки спавна игрока
         /// </summary>
-        /// <param name="defaultPosX">Значение X заданное кодом</param>
-        /// <param name="defaultPosY">Значение Y заданное кодом</param>
-        /// <returns></returns>
+        /// <param name="defaultPosX">Значение X из карты Map</param>
+        /// <param name="defaultPosY">Значение Y из карты Map</param>
+        /// <returns>Координаты объекта на карте Map</returns>
         private Point2D GetSpawnPoint(int defaultPosX, int defaultPosY)
         {
             int spawnPosX = defaultPosX;
@@ -73,31 +73,10 @@ namespace Project_3310
 
 
 
-
-        /// <summary>
-        /// Метод в котором происходит обновление состояния игрока
-        /// </summary>
-        public void Update()
-        {
-            MovePlayer();
-            InputManagerAndCollideDetector();
-
-        }
-
-        /// <summary>
-        /// Перемещает "модельку" игрока по заданным координатам
-        /// </summary>
-        public void MovePlayer()
-        {
-            ClearTrace();
-            Console.SetCursorPosition(Position.posY, Position.posX);
-            Console.Write(PlayerSkin);
-        }
-
         /// <summary>
         /// Проверяет нажатые клавиши и меняет координаты игрока если не произошло столкновения с границами 
         /// </summary>
-        public void InputManagerAndCollideDetector()
+       public void InputManagerAndCollideDetector()
         {
 
             pressedKey = Console.ReadKey(true);
@@ -107,38 +86,46 @@ namespace Project_3310
                     if (LevelEnvironment.Map[Position.posX - 1, Position.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
                     {
                         Position.posX--;
+                        MovePlayer();
+                        
                     }
                     break;
                 case ConsoleKey.DownArrow:
                     if (LevelEnvironment.Map[Position.posX + 1, Position.posY] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
                     {
                         Position.posX++;
+                        MovePlayer();
                     }
                     break;
                 case ConsoleKey.LeftArrow:
                     if (LevelEnvironment.Map[Position.posX, Position.posY - 1] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
                     {
                         Position.posY--;
+                        MovePlayer();
                     }
                     break;
                 case ConsoleKey.RightArrow:
                     if (LevelEnvironment.Map[Position.posX, Position.posY + 1] != LevelEnvironment.objectTypes[(int)ObjectType.Wall])
                     {
                         Position.posY++;
+                        MovePlayer();
                     }
                     break;
                 case ConsoleKey.Spacebar:
                     PickUp();
+                    MovePlayer();
                     break;
                 case ConsoleKey.I:
                     if (isInventoryOpened == false)
                     {
                         OpenInventory();
+                        MovePlayer();
                         isInventoryOpened = true;
                     }
                     else
                     {
                         CloseInventory();
+                        MovePlayer();
                         isInventoryOpened = false;
                     }
                     break;
@@ -150,12 +137,24 @@ namespace Project_3310
                     {
                         GameManager.npc.Chat();
                     }
+                    else if(LevelEnvironment.Map[Position.posX, Position.posY + 1] == LevelEnvironment.objectTypes[(int)ObjectType.Dog])
+                    {
+                        GameManager.dog.Chat();
+                    }
                     break;
                 default:
                     break;
             };
         }
-
+        /// <summary>
+        /// Перемещает "модельку" игрока по заданным координатам
+        /// </summary>
+        public void MovePlayer()
+        {
+            ClearTrace();
+            Console.SetCursorPosition(Position.posY, Position.posX);
+            Console.Write(PlayerSkin);
+        }
         /// <summary>
         /// Очищение клетки с которой игрок ушел
         /// </summary>

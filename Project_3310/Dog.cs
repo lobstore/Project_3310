@@ -1,9 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Project_3310
 {
-    internal class Henry : NPC
+    internal class Dog:Behaviour
     {
+
         /// <summary>
         /// Предыдущий индекс списка
         /// </summary>
@@ -18,16 +24,15 @@ namespace Project_3310
         /// Предудущая позиция персонажа на игровом поле
         /// </summary>
         public Point2D PrevPosition { get; set; } = new Point2D();
-        private Process? DialogProcess { get; set; }
 
-        private List<string> sentences = new List<string>() { "Hello", "Whats up bro", "How do you do" };
-        public Henry()
+        private List<string> sentences = new List<string>() { "Bark!", "Happy noise", "Bark-Bark!" };
+        public Dog()
         {
             for (int i = 0; i < LevelEnvironment.Map.GetLength(0); i++)
             {
                 for (int j = 0; j < LevelEnvironment.Map.GetLength(1); j++)
                 {
-                    if (LevelEnvironment.Map[i, j] == LevelEnvironment.objectTypes[(int)ObjectType.NPC])
+                    if (LevelEnvironment.Map[i, j] == LevelEnvironment.objectTypes[(int)ObjectType.Dog])
                     {
                         Position = new Point2D(i, j);
                         PrevPosition.posX = Position.posX;
@@ -40,18 +45,18 @@ namespace Project_3310
 
         }
 
-        override public void Update()
+        public void Update()
         {
             Thread.Sleep(7);
-            
-                InputManagerAndCollideDetector();
+
+            InputManagerAndCollideDetector();
         }
 
         public void Move()
         {
 
             LevelEnvironment.Map[PrevPosition.posX, PrevPosition.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NONE];
-            LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.NPC];
+            LevelEnvironment.Map[Position.posX, Position.posY] = LevelEnvironment.objectTypes[(int)ObjectType.Dog];
 
             ClearTrace();
             Console.SetCursorPosition(Position.posY, Position.posX);
@@ -113,7 +118,7 @@ namespace Project_3310
         /// <summary>
         /// Метод для обмена любезностями с нпс
         /// </summary>
-        override public void Chat()
+        public void Chat()
         {
             Console.SetCursorPosition(Position.posY, Position.posX + 1);
             int rnd = new Random().Next(sentences.Count);

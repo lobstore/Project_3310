@@ -12,6 +12,7 @@ namespace Project_3310
     enum ButtonOption{
         NewGame = 0,
         Exit, 
+        Continue,
         Accept,
         Decline
     }
